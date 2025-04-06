@@ -12,7 +12,7 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: self-hosted
+    runs-on: self-hosted  # ✅ aqui é o runner local
 
     steps:
       - name: Checkout código
@@ -30,12 +30,12 @@ jobs:
         run: dotnet build --configuration Release --no-restore
 
       - name: Executar testes
-        run: dotnet test --no-build --verbosity normal
+        run: dotnet test --no-build --configuration Release --verbosity normal
 
   release:
     needs: build-and-test
     if: startsWith(github.ref, 'refs/tags/v1.')
-    runs-on: self-hosted
+    runs-on: self-hosted  # ✅ você pode usar o runner local também aqui
 
     steps:
       - name: Checkout código
@@ -49,7 +49,7 @@ jobs:
   merge-branches:
     needs: release
     if: startsWith(github.ref, 'refs/tags/v1.')
-    runs-on: self-hosted
+    runs-on: self-hosted  # ✅ também pode usar local aqui
 
     steps:
       - name: Checkout código
@@ -63,16 +63,12 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Obter branch de origem da tag
-        id: origem
-        run: |
-          BRANCH=$(git branch -r --contains ${{ github.sha }} | grep 'origin/release/' | head -n 1 | sed 's/origin\///')
-          echo "BRANCH_ORIGEM=$BRANCH" >> $GITHUB_ENV
-
       - name: Merge release ➜ develop
         run: |
+          git fetch origin
+          BRANCH_FROM=$(git tag --points-at HEAD)
           git checkout develop
-          git merge origin/${{ env.BRANCH_ORIGEM }} --no-edit || true
+          git merge origin/$BRANCH_FROM --no-edit || true
           git push origin develop
 
       - name: Merge develop ➜ master
