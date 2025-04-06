@@ -27,3 +27,25 @@ Ferramenta de benchmark para testar conexões WebSocket em massa com monitoramen
 
 ### 📦 Estrutura
 
+
+---
+
+### ✅ O que falta pra funcionar tudo?
+
+| Item                   | Status                                                                 |
+|------------------------|------------------------------------------------------------------------|
+| CI rodando             | ✅ Já está configurado com `.github/workflows/ci.yml`                  |
+| Release Tag (v1.0.0)   | ❌ **Ainda não criada** → crie uma tag `v1.0.0` na branch `release/1.x` |
+| Licença visível        | ✅ `LICENSE` está presente                                              |
+| Cobertura via Codecov  | ⚠️ Opcional – posso configurar se quiser                               |
+
+---
+
+### ✅ Próximos passos recomendados
+
+1. **Suba uma tag** de release:
+
+```bash
+git checkout release/1.x
+git tag v1.0.0
+git push origin v1.0.0
