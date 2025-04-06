@@ -1,9 +1,9 @@
-name: Atualizar Master e Main a partir da Develop
+name: Atualizar Branches Após Tag
 
 on:
   push:
-    branches:
-      - develop
+    tags:
+      - 'v1.*'
 
 jobs:
   merge-branches:
@@ -17,23 +17,23 @@ jobs:
           fetch-depth: 0
 
       - name: Configurar Git
-        shell: pwsh
+        shell: powershell
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Merge develop ➜ master
-        shell: pwsh
+        shell: powershell
         run: |
-          git fetch origin
           git checkout master
+          git pull origin master
           git merge origin/develop --no-edit
           git push origin master
 
       - name: Merge master ➜ main
-        shell: pwsh
+        shell: powershell
         run: |
-          git fetch origin
           git checkout main
+          git pull origin main
           git merge origin/master --no-edit
           git push origin main
