@@ -4,51 +4,9 @@ on:
   push:
     branches:
       - 'release/1.*'
-  pull_request:
-    branches:
-      - 'release/1.*'
 
 jobs:
-  # Build e testes desativados temporariamente por limitação do runner Windows
-  # Para testes locais, use o script run-ci.ps1
-
-  # build-and-test:
-  #   runs-on: windows-latest
-  #   steps:
-  #     - name: Checkout código
-  #       uses: actions/checkout@v3
-  #
-  #     - name: Instalar .NET SDK
-  #       uses: actions/setup-dotnet@v4
-  #       with:
-  #         dotnet-version: '8.0.x'
-  #
-  #     - name: Restaurar dependências
-  #       run: dotnet restore
-  #
-  #     - name: Compilar solução
-  #       run: dotnet build --configuration Release --no-restore
-  #
-  #     - name: Executar testes
-  #       run: dotnet test --no-build --verbosity normal
-
-  release:
-    # Roda quando push ocorre em qualquer branch release/1.*
-    if: startsWith(github.ref, 'refs/heads/release/1.')
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout código
-        uses: actions/checkout@v3
-
-      - name: Criar release no GitHub
-        uses: softprops/action-gh-release@v1
-        with:
-          generate_release_notes: true
-
   merge-branches:
-    needs: release
-    if: startsWith(github.ref, 'refs/heads/release/1.')
     runs-on: ubuntu-latest
 
     steps:
