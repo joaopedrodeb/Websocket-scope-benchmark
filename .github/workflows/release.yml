@@ -1,0 +1,20 @@
+name: Publicar Release e Fazer Merge
+
+on:
+  push:
+    tags:
+      - 'v1.*'
+
+jobs:
+  release:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v3
+
+      - name: Criar release no GitHub
+        uses: softprops/action-gh-release@v1
+        with:
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
