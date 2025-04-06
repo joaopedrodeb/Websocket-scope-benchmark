@@ -41,12 +41,15 @@ jobs:
         run: |
           git fetch origin
 
-          # Usa o nome da tag atual de forma segura
-          $ref = "${env:GITHUB_REF}"
-          $tag = $ref.Replace("refs/tags/", "").Trim()
+          # Captura a tag correta com fallback
+          $tag = git tag --points-at HEAD | Out-String
+          $tag = $tag.Trim()
+          if (-not $tag) {
+            $ref = "${env:GITHUB_REF}"
+            $tag = $ref.Replace("refs/tags/", "").Trim()
+          }
 
-          Write-Host "🔁 Usando tag $tag para merge na develop"
-
+          Write-Host "🔁 Fazendo merge da tag '$tag' na branch develop"
           git checkout develop
           git merge origin/$tag --no-edit
           git push origin develop
