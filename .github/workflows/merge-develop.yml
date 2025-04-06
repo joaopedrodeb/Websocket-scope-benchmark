@@ -1,4 +1,4 @@
-name: Publicar Release e Fazer Merge
+name: Atualizar Branches Após Tag
 
 on:
   push:
@@ -6,28 +6,7 @@ on:
       - 'v1.*'
 
 jobs:
-  release:
-    runs-on: self-hosted
-
-    steps:
-      - name: Checkout código
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: Mostrar versão
-        run: |
-          echo "📌 Criando release para a tag: ${{ github.ref_name }}"
-
-      - name: Criar release no GitHub
-        uses: softprops/action-gh-release@v1
-        with:
-          generate_release_notes: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   merge-branches:
-    needs: release
     runs-on: self-hosted
 
     steps:
