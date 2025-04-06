@@ -40,7 +40,6 @@ jobs:
         shell: pwsh
         run: |
           git fetch origin
-          
           $tag = git tag --points-at HEAD | Out-String
           $tag = $tag.Trim()
 
