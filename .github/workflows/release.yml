@@ -40,14 +40,13 @@ jobs:
         shell: pwsh
         run: |
           git fetch origin
-          $tag = git tag --points-at HEAD | Out-String
-          $tag = $tag.Trim()
 
-          if (-not $tag) {
-            $tag = "${env:GITHUB_REF_NAME}".Replace("refs/tags/", "")
-          }
+          # Usa o nome da tag atual de forma segura
+          $ref = "${env:GITHUB_REF}"
+          $tag = $ref.Replace("refs/tags/", "").Trim()
 
-          Write-Host "🔁 Tag detectada: $tag"
+          Write-Host "🔁 Usando tag $tag para merge na develop"
+
           git checkout develop
           git merge origin/$tag --no-edit
           git push origin develop
