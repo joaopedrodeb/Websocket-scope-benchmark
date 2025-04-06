@@ -37,10 +37,11 @@ jobs:
 
     steps:
       - name: Extrair versão da branch
-        shell: pwsh
+        shell: powershell
         run: |
           $version = "${{ github.ref_name }}".Replace("release/", "")
-          echo "version=$version" >> $env:GITHUB_OUTPUT
+          echo "version=$version" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+
 
 
       - name: Criar e subir tag v*
