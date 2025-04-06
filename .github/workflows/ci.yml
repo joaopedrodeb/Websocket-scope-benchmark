@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - 'release/*'
-    tags:
-      - 'v1.*'
   workflow_dispatch:
 
 jobs:
@@ -34,15 +32,16 @@ jobs:
     needs: build-and-test
     if: startsWith(github.ref, 'refs/heads/release/')
     runs-on: self-hosted
+    outputs:
+      version: ${{ steps.vars.outputs.version }}
 
     steps:
       - name: Extrair versão da branch
+        id: vars
         shell: powershell
         run: |
           $version = "${{ github.ref_name }}".Replace("release/", "")
           echo "version=$version" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
-
-
 
       - name: Criar e subir tag v*
         run: |
@@ -53,8 +52,8 @@ jobs:
 
   release:
     needs: tag-release
-    if: startsWith(github.ref, 'refs/tags/v1.')
     runs-on: self-hosted
+    if: always()  # 👈 roda mesmo que a tag não dispare novo evento
 
     steps:
       - name: Checkout código
@@ -63,12 +62,13 @@ jobs:
       - name: Criar release no GitHub
         uses: softprops/action-gh-release@v1
         with:
+          tag_name: v${{ needs.tag-release.outputs.version }}
           generate_release_notes: true
 
   merge-branches:
     needs: release
-    if: startsWith(github.ref, 'refs/tags/v1.') || github.event_name == 'workflow_dispatch'
     runs-on: self-hosted
+    if: always()  # 👈 força execução mesmo sem novo evento
 
     steps:
       - name: Checkout código
