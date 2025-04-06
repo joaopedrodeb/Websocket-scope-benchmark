@@ -37,9 +37,11 @@ jobs:
 
     steps:
       - name: Extrair versão da branch
-        id: vars
+        shell: pwsh
         run: |
-          echo "version=$(echo '${{ github.ref_name }}' | sed 's/release\///')" >> $GITHUB_OUTPUT
+          $version = "${{ github.ref_name }}".Replace("release/", "")
+          echo "version=$version" >> $env:GITHUB_OUTPUT
+
 
       - name: Criar e subir tag v*
         run: |
