@@ -27,8 +27,39 @@ Ferramenta de benchmark para testar conexões WebSocket em massa com monitoramen
 
 ### 📦 Estrutura
 
+### 📦 Estrutura do Projeto
 
----
+```
+WebSocketScope/
+│
+├── WebSocketScope/                # Projeto principal WinForms (interface gráfica)
+│   ├── MainForm.cs                # Tela principal com controle de execução
+│   ├── MainForm.Designer.cs      # Designer do formulário
+│   └── Program.cs                # Inicialização do aplicativo
+│
+├── ServidorWebSocket/            # Servidor WebSocket embutido (ASP.NET Core)
+│   └── Servidor.cs               # Módulo que escuta e responde conexões
+│
+├── WebSocketScope.Servicos/      # Lógica de negócio e utilitários
+│   ├── BenchmarkService.cs       # Geração de logs de benchmark
+│   └── CsvExporter.cs            # Escrita de arquivos CSV (log)
+│
+├── WebSocketScope.Tests/         # Testes automatizados com xUnit
+│   ├── BenchmarkServiceTests.cs  # Testes de formatação de log
+│   └── CsvExporterTests.cs       # Testes de exportação de CSV
+│
+├── logs/                         # Pasta criada dinamicamente com os benchmarks
+│   └── log_YYYYMMDD_HHmmss/      # Subpastas com logs por execução
+│       └── log.csv
+│
+├── .github/workflows/            # Workflows do GitHub Actions
+│   ├── ci.yml                    # Pipeline de build e testes
+│   └── release.yml               # Geração automática de release + merge
+│
+├── README.md
+├── LICENSE
+└── WebSocketScope.sln           # Solução do Visual Studio
+```
 
 ### ✅ O que falta pra funcionar tudo?
 
