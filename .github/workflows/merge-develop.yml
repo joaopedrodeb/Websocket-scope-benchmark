@@ -1,12 +1,33 @@
-name: Atualizar Master e Main a partir da Develop
+name: Publicar Release e Fazer Merge
 
 on:
   push:
-    branches:
-      - develop
+    tags:
+      - 'v1.*'
 
 jobs:
+  release:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Mostrar versão
+        run: |
+          echo "📌 Criando release para a tag: ${{ github.ref_name }}"
+
+      - name: Criar release no GitHub
+        uses: softprops/action-gh-release@v1
+        with:
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   merge-branches:
+    needs: release
     runs-on: self-hosted
 
     steps:
@@ -17,23 +38,23 @@ jobs:
           fetch-depth: 0
 
       - name: Configurar Git
-        shell: pwsh
+        shell: powershell
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Merge develop ➜ master
-        shell: pwsh
+        shell: powershell
         run: |
-          git fetch origin
           git checkout master
+          git pull origin master
           git merge origin/develop --no-edit
           git push origin master
 
       - name: Merge master ➜ main
-        shell: pwsh
+        shell: powershell
         run: |
-          git fetch origin
           git checkout main
+          git pull origin main
           git merge origin/master --no-edit
           git push origin main
