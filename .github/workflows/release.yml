@@ -44,6 +44,7 @@ jobs:
           $tag = git tag --points-at HEAD | Out-String
           $tag = $tag.Trim()
           if (-not $tag) { $tag = "${env:GITHUB_REF_NAME}" }
+          Write-Host "Branch/tag a ser mergeada: $tag"
           git checkout develop
           git merge origin/$tag --no-edit
           git push origin develop
