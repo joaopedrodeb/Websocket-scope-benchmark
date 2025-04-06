@@ -1,0 +1,39 @@
+name: Atualizar Branches em Cadeia
+
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  merge-branches:
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Configurar Git
+        shell: powershell
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Merge develop ➜ master
+        shell: powershell
+        run: |
+          git checkout master
+          git pull origin master
+          git merge origin/develop --no-edit
+          git push origin master
+
+      - name: Merge master ➜ main
+        shell: powershell
+        run: |
+          git checkout main
+          git pull origin main
+          git merge origin/master --no-edit
+          git push origin main
