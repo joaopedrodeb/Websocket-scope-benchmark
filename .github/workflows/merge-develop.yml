@@ -1,9 +1,9 @@
-name: Atualizar Branches Após Tag
+name: Atualizar Branches em Cadeia
 
 on:
   push:
-    tags:
-      - 'v1.*'
+    branches:
+      - develop
 
 jobs:
   merge-branches:
