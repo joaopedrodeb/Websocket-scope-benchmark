@@ -5,7 +5,7 @@ namespace WebSocketScope.Tests
 {
     public class BenchmarkServiceTests
     {
-        [Fact]
+        [Fact(DisplayName = "GerarLog Deve Retornar String Formatada")]
         public void GerarLog_DeveRetornarStringFormatada()
         {
             // Arrange

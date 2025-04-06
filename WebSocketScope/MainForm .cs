@@ -14,10 +14,16 @@ namespace WebSocketScope
     {
         private CancellationTokenSource _cts = new();
         private int _conexoesAtivas = 0;
-        private string _csvPath = "log_teste.csv";
+        private string _logFolder;
+        private string _csvPath;
 
         public MainForm()
         {
+            _logFolder = Path.Combine("logs", $"log_{DateTime.Now:yyyyMMdd_HHmmss}");
+            _csvPath = Path.Combine(_logFolder, "log.csv");
+
+            CsvExporter.CriarCsv(_csvPath, "Hora       | Conexões Ativas | Memória (MB)");
+
             InitializeComponent();
             btnParar.Enabled = false;
         }
@@ -31,12 +37,6 @@ namespace WebSocketScope
 
             int total = (int)numericConexoes.Value;
             int tempoSegundos = (int)numericSegundos.Value;
-
-            // Grava o cabeçalho no CSV
-            using (var writer = new StreamWriter(_csvPath, append: false))
-            {
-                writer.WriteLine("Hora       | Conexões Ativas | Memória (MB)");
-            }
 
             // Exibe o cabeçalho na ListBox
             Invoke(() =>
@@ -85,8 +85,15 @@ namespace WebSocketScope
 
                     string log = BenchmarkService.GerarLog(DateTime.Now, _conexoesAtivas, mb);
 
-                    Invoke(() => listBoxLog.Items.Insert(1, log)); // Insere abaixo do cabeçalho
-                    await File.AppendAllTextAsync(_csvPath, log + "\n");
+                    Invoke(() =>
+                    {
+                        if (listBoxLog.Items.Count > 1000)
+                            listBoxLog.Items.RemoveAt(listBoxLog.Items.Count - 1);
+
+                        listBoxLog.Items.Insert(1, log);
+                    });
+
+                    CsvExporter.AdicionarLinha(_csvPath, log);
                     await Task.Delay(1000);
                 }
             });
